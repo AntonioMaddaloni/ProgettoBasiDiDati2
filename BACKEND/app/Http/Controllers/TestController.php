@@ -9,10 +9,12 @@ class TestController extends Controller
     public function helloWorld(Request $request)
     {
 
-        $data = [
-            'message' => 'Hello World!'
-        ];
+        $database = app('mongodb');
 
+        $data = [
+            'databaseName' => $database->getDatabaseName()
+        ];
+        
         return response()->json($data);
     }
 }
