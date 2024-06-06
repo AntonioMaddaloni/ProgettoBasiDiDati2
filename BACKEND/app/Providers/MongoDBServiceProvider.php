@@ -13,7 +13,7 @@ class MongoDBServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton('mongodb', function ($app) {
+        $this->app->bind('mongodb', function ($app) {
             $config = config('database.connections.mongodb');
             try{
                 $connection = new Client("mongodb://{$config['host']}:{$config['port']}");
