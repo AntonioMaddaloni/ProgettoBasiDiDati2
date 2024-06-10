@@ -8,7 +8,10 @@ use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/',[TestController::class,'helloWorld']);
 
-Route::post('/token',[LoginController::class,'login']);
-Route::get('/token/check',[LoginController::class,'check']);
+Route::prefix('/token')->group(function () {
+    Route::post('/',[LoginController::class,'login']);
+    Route::get('/check',[LoginController::class,'check']);
+    Route::get('/renew',[LoginController::class,'renew']);
+});
 
 

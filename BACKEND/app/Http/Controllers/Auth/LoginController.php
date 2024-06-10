@@ -76,4 +76,27 @@ class LoginController extends Controller
             return response()->json(['error' => 'token_absent'], 401);
         }
     }
+
+    public function renew(Request $request)
+    {
+        try {
+        // Ottieni il token dall'header Authorization
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            return response()->json(['error' => 'token_not_provided'], 400);
+        }
+
+        // Verifica la validità del token senza autenticare l'utente
+        $newToken = JWTAuth::setToken($token)->refresh();
+
+        return response()->json(['token' => $newToken]);
+        } catch (TokenExpiredException $e) {
+            return response()->json(['error' => 'token_expired'], 401);
+        } catch (TokenInvalidException $e) {
+            return response()->json(['error' => 'token_invalid'], 401);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'token_absent'], 401);
+        }
+    }
 }
