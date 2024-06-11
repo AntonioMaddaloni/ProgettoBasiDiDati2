@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Support\Facades\Hash;
+use MongoDB\Client;
 
 class Profile extends Model implements JWTSubject
 {
@@ -83,5 +85,29 @@ class Profile extends Model implements JWTSubject
         $profilo->birthday = $documento['birthday']; 
         $profilo->favorites_anime = $documento['favorites_anime'];
         return $profilo;
+    }
+
+    public static function create($username, $password, $gender, $birthday)
+    {
+        $database = app('mongodb');
+        $password= Hash::make($password);
+        $newDocument = [
+            '_id' => $username,
+            'password' => $password,
+            'gender' => $gender,
+            'birthday'=> $birthday,
+            'favorites_anime' => []
+        ];
+        
+
+
+        $result = $database->profiles->insertOne($newDocument);
+        
+        if ($result->getInsertedCount() > 0) {
+            return Profile::findByID($username);
+        } else {
+            return null;
+        }
+
     }
 }
