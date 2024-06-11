@@ -3,32 +3,31 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Profile;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
-class LoginController extends Controller
+class TokenController extends Controller
 {
     public function login(Request $request)
     {
-        $database = app('mongodb');
-
         $username = $request->input('username');
         $password = $request->input('password');
 
-        $document = $database->profiles->findOne(['_id' => $username]);
+        if(!isset($username) && !isset($password))
+            return response()->json(['message' => 'Username or Password incorrect'], 401);
 
-        if ($document) {
+        $profilo = Profile::findByID($username);
+
+        if ($profilo) {
             try{
-                if(Hash::check($password,$document['password']))
+                if(Hash::check($password,$profilo->getPassword()))
                 {
-                    $profile = new Profile();
-                    $profile->setKey($document['_id']);
-                    $token = JWTAuth::fromUser($profile);
+                    $token = JWTAuth::fromUser($profilo);
             
                     return response()->json(['token' => $token]);
                 }
@@ -37,11 +36,9 @@ class LoginController extends Controller
             }
             catch(\Exception $e)
             {
-                if($password == $document['password'])
+                if($password == $profilo->getPassword())
                 {
-                    $profile = new Profile();
-                    $profile->setKey($document['_id']);
-                    $token = JWTAuth::fromUser($profile);
+                    $token = JWTAuth::fromUser($profilo);
             
                     return response()->json(['token' => $token]);
                 }
@@ -61,19 +58,19 @@ class LoginController extends Controller
         $token = $request->bearerToken();
 
         if (!$token) {
-            return response()->json(['error' => 'token_not_provided'], 400);
+            return response()->json(['message' => 'token_not_provided'], 400);
         }
 
         // Verifica la validità del token senza autenticare l'utente
         $payload = JWTAuth::setToken($token)->checkOrFail();
 
-        return response()->json(['token_valid' => true, 'payload' => $payload], 200);
+        return response()->json(['token_valid' => true], 200);
         } catch (TokenExpiredException $e) {
-            return response()->json(['error' => 'token_expired'], 401);
+            return response()->json(['token_valid' => false], 200);
         } catch (TokenInvalidException $e) {
-            return response()->json(['error' => 'token_invalid'], 401);
+            return response()->json(['message' => 'token_invalid'], 401);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'token_absent'], 401);
+            return response()->json(['message' => 'token_absent'], 401);
         }
     }
 
@@ -84,7 +81,7 @@ class LoginController extends Controller
         $token = $request->bearerToken();
 
         if (!$token) {
-            return response()->json(['error' => 'token_not_provided'], 400);
+            return response()->json(['message' => 'token_not_provided'], 400);
         }
 
         // Verifica la validità del token senza autenticare l'utente
@@ -92,11 +89,11 @@ class LoginController extends Controller
 
         return response()->json(['token' => $newToken]);
         } catch (TokenExpiredException $e) {
-            return response()->json(['error' => 'token_expired'], 401);
+            return response()->json(['message' => 'token_expired'], 401);
         } catch (TokenInvalidException $e) {
-            return response()->json(['error' => 'token_invalid'], 401);
+            return response()->json(['message' => 'token_invalid'], 401);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'token_absent'], 401);
+            return response()->json(['message' => 'token_absent'], 401);
         }
     }
 }

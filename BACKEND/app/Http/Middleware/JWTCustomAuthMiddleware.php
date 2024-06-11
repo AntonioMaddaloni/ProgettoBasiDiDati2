@@ -5,6 +5,10 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 
 class JWTCustomAuthMiddleware
 {
@@ -15,6 +19,25 @@ class JWTCustomAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request);
+        try {
+            // Ottieni il token dall'header Authorization
+            $token = $request->bearerToken();
+    
+            if (!$token) {
+                return response()->json(['message' => 'token_not_provided'], 400);
+            }
+    
+            // Verifica la validità del token senza autenticare l'utente
+            $payload = JWTAuth::setToken($token)->checkOrFail();
+    
+            return $next($request);
+
+            } catch (TokenExpiredException $e) {
+                return response()->json(['token_valid' => 'token_expired'], 401);
+            } catch (TokenInvalidException $e) {
+                return response()->json(['message' => 'token_invalid'], 401);
+            } catch (JWTException $e) {
+                return response()->json(['message' => 'token_absent'], 401);
+            }
     }
 }

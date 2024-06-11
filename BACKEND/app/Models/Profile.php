@@ -16,6 +16,7 @@ class Profile extends Model implements JWTSubject
     private $birthday;
     private $favorites_anime;
     private $document;
+    private static $database;
 
     public function __construct() {
         $database = app('mongodb');
@@ -42,6 +43,16 @@ class Profile extends Model implements JWTSubject
         $this->_id = $_id;
     }
 
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->$password = $password;
+    }
+
     public function updateDocument()
     {
         $newValues = [
@@ -55,5 +66,22 @@ class Profile extends Model implements JWTSubject
         ];
 
         $this->document->updateOne(['_id' => $this->_id], $newValues);
+    }
+
+    public static function findByID($_id)
+    {
+        $database = app('mongodb');
+        $documento = $database->profiles->findOne(['_id' => $_id]);
+
+        if(!$documento)
+            return null;
+        
+        $profilo = new Profile();
+        $profilo->_id = $documento['_id'];
+        $profilo->password = $documento['password']; 
+        $profilo->gender = $documento['gender']; 
+        $profilo->birthday = $documento['birthday']; 
+        $profilo->favorites_anime = $documento['favorites_anime'];
+        return $profilo;
     }
 }

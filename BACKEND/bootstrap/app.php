@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\JWTCustomAuthMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+            'auth.jwt' => JWTCustomAuthMiddleware::class,
         ]);        
     })
     ->withExceptions(function (Exceptions $exceptions) {
