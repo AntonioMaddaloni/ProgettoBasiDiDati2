@@ -18,7 +18,6 @@ class Profile extends Model implements JWTSubject
     private $birthday;
     private $favorites_anime;
     private $document;
-    private static $database;
 
     public function __construct() {
         $database = app('mongodb');

@@ -18,8 +18,9 @@ Route::prefix('/token')->group(function () {
 Route::post('/registrazione',[RegistrazioneController::class,'registrazione']);
 
 
-Route::prefix('/anime')->group(function () {
+Route::prefix('/anime')->middleware(['auth.jwt'])->group(function () {
     Route::get('/',[AnimeController::class,'getListaAnime']);
+    Route::get('/id/{id}',[AnimeController::class,'getAnime']);
 
 });
 
