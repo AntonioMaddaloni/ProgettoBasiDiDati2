@@ -27,5 +27,20 @@ class AnimeController extends Controller
         return response()->json(['anime' => $document]);
     }
 
+    public function searchAnime(Request $request)
+    {
+        $limit = 10;
+        $skip = $request->input('skip');
+
+        if(!isset($skip))
+            $skip = 1;
+        $skip = (max($skip,1)-1)* $limit;
+
+        $search = $request->input('search');
+
+        $documents = Anime::findByTitlePagination($limit,$skip,$search);
+        return response()->json(['animes' => $documents]);
+    }
+
     
 }

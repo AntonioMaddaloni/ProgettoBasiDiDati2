@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use MongoDB\Client;
+use MongoDB\BSON\Regex;
 
 class Anime extends Model
 {
@@ -68,6 +69,23 @@ class Anime extends Model
 
         $database = app('mongodb');
         $collezione = $database->animes->find([],['limit' => $limit, 'skip' => $skip, 'sort' => ['title' => 1],'projection' => ['title' => 1]]);
+        $documentsParsed = iterator_to_array($collezione);
+        $i = 0;
+        foreach ($documentsParsed as $documento) {
+            if (is_float($documento['title']) && is_nan($documento['title'])) {
+                $documentsParsed[$i]['title'] = null;
+            }
+            $i = $i+1;
+        }
+        return $documentsParsed;
+    }
+
+    public static function findByTitlePagination($limit,$skip,$search)
+    {
+
+        $database = app('mongodb');
+        $regex = new Regex($search, 'i');
+        $collezione = $database->animes->find(['title' => $regex],['limit' => $limit, 'skip' => $skip, 'sort' => ['title' => 1],'projection' => ['title' => 1]]);
         $documentsParsed = iterator_to_array($collezione);
         $i = 0;
         foreach ($documentsParsed as $documento) {

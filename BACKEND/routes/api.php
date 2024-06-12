@@ -24,6 +24,7 @@ Route::middleware(['auth.jwt'])->group(function () {
     Route::prefix('/anime')->group(function () {
         Route::get('/',[AnimeController::class,'getListaAnime']);
         Route::get('/id/{id}',[AnimeController::class,'getAnime']);
+        Route::post('/search',[AnimeController::class,'searchAnime']);
     });
 
     Route::prefix('/user')->group(function () {
