@@ -100,7 +100,7 @@ class Anime extends Model
     public static function findByID($_id)
     {
         $database = app('mongodb');
-        $documento = $database->animes->findOne(['_id' => $_id]);
+        $documento = $database->animes->findOne(['_id' => intval($_id)]);
 
         if(!$documento)
             return null;

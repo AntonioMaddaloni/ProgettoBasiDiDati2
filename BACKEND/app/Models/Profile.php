@@ -22,7 +22,7 @@ class Profile extends Authenticatable implements JWTSubject
 
     public function __construct() {
         $database = app('mongodb');
-        $document = $database->profiles;
+        $this->document = $database->profiles;
     }
 
     public function getJWTIdentifier()
@@ -97,7 +97,28 @@ class Profile extends Authenticatable implements JWTSubject
             ]
         ];
 
-        $this->document->updateOne(['_id' => $this->_id], $newValues);
+        $updateResult = $this->document->updateOne(['_id' => $this->_id], $newValues);
+        if ($updateResult->getModifiedCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function updateFavoritesAnime($id)
+    {
+        $newVal = [
+            '$push' => [
+                'favorites_anime' => intval($id)
+            ]
+        ];
+
+        $updateResult = $this->document->updateOne(['_id' => $this->_id], $newVal);
+        if ($updateResult->getModifiedCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function findByID($_id)

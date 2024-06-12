@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Anime;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Anime;
+use Illuminate\Support\Facades\Auth;
 
 class AnimeController extends Controller
 {
@@ -47,25 +48,24 @@ class AnimeController extends Controller
         
         $id = $request->input('_id');
 
-        $anime = Anime::findByID($id);
-
+        $anime = Anime::findByID(intval($id));
         if(!$anime)
         return response()->json(['message' => 'anime not found'],400);
 
         $user = Auth::user();
 
         $favanimes = $user->getFavoritesAnime();
-        
+
         foreach($favanimes as $favanime)
         {
             if($favanime == intval($id))
                 return response()->json(['message' => 'you can\'t bookmark this anime'],400);
         }
-            
-        
-        $user->setFavoritesAnime(array_push($user->getFavoritesAnime(),$id));
-        $user->updateDocument();
-        return response()->json(['message' => 'anime added correctly'],200);
+
+        if($user->updateFavoritesAnime($id))
+            return response()->json(['message' => 'anime added correctly'],200);
+        else
+            return response()->json(['message' => 'error during add anime'],500);
     }
     
 
