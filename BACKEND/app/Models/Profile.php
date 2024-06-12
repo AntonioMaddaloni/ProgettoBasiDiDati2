@@ -68,11 +68,21 @@ class Profile extends Authenticatable implements JWTSubject
     public function getFavoritesAnime()
     {
         return $this->favorites_anime;
-    }
+    }    
 
     public function setFavoritesAnime($favorites_anime)
     {
         $this->$favorites_anime = $favorites_anime;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function setPassword($password)
+    {
+        $this->$password = $password;
     }
 
     public function updateDocument()
