@@ -128,4 +128,6 @@ class Anime extends Model
         return $documento;
     }
 
+    
+
 }
