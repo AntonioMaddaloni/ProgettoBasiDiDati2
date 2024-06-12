@@ -27,6 +27,11 @@ class Anime extends Model
         $document = $database->animes;
     }
 
+    public function getKey()
+    {
+        return $this->_id;
+    }
+
     public static function findAllDocumentPagination($limit,$skip)
     {
 

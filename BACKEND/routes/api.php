@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Auth\RegistrazioneController;
 use App\Http\Controllers\Anime\AnimeController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Reviews\RecensioniController;
 
 Route::get('/',[TestController::class,'helloWorld']);
 
@@ -31,6 +32,10 @@ Route::middleware(['auth.jwt'])->group(function () {
     Route::prefix('/user')->group(function () {
         Route::get('/me',[UserController::class,'me']);
         Route::get('/my-favorites',[UserController::class,'myFavorites']);
+    });
+
+    Route::prefix('/recensioni')->group(function () {
+        Route::post('/',[RecensioniController::class,'addRecensione']);
     });
 
 });

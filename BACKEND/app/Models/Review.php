@@ -45,6 +45,37 @@ class Review extends Model
 
 
 
+    public static function create($testoRecensione, $scores, $profile, $anime)
+    {
+        $database = app('mongodb');
+
+        $values = array_values($scores);
+        $sum = array_sum($values);
+        $count = count($values);
+        $average = $sum / $count;
+
+        $maxIdDocument = $database->reviews->aggregate([['$group' => ['_id' => null, 'maxId' => ['$max' => '$_id']]] ])->toArray();
+        $maxId = $maxIdDocument[0]->maxId +1;
+
+        $newDocument = [
+            '_id' => $maxId,
+            'anime' => $anime,
+            'profile' => $profile,
+            'text' => $testoRecensione,
+            'scores' => $scores,
+            'score'=> $average
+        ];
+        
+
+        $result = $database->reviews->insertOne($newDocument);
+        
+        if ($result->getInsertedCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 
 
 }
