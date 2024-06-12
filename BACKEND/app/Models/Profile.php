@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use MongoDB\Client;
 
-class Profile extends Model implements JWTSubject
+class Profile extends Authenticatable implements JWTSubject
 {
     use HasFactory;
 
@@ -44,14 +45,34 @@ class Profile extends Model implements JWTSubject
         $this->_id = $_id;
     }
 
-    public function getPassword()
+    public function getGender()
     {
-        return $this->password;
+        return $this->gender;
     }
 
-    public function setPassword($password)
+    public function setGender($gender)
     {
-        $this->$password = $password;
+        $this->$gender = $gender;
+    }
+
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+
+    public function setBirthday($birthday)
+    {
+        $this->$birthday = $birthday;
+    }
+
+    public function getFavoritesAnime()
+    {
+        return $this->favorites_anime;
+    }
+
+    public function setFavoritesAnime($favorites_anime)
+    {
+        $this->$favorites_anime = $favorites_anime;
     }
 
     public function updateDocument()

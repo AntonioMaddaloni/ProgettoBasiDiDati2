@@ -28,12 +28,15 @@ class JWTCustomAuthMiddleware
             }
     
             // Verifica la validità del token senza autenticare l'utente
-            $payload = JWTAuth::setToken($token)->checkOrFail();
-    
+            JWTAuth::setToken($token)->checkOrFail();
+
+            // Effettuo il login sulla base del token
+            JWTAuth::authenticate();
+            
             return $next($request);
 
             } catch (TokenExpiredException $e) {
-                return response()->json(['token_valid' => 'token_expired'], 401);
+                return response()->json(['message' => 'token_expired'], 401);
             } catch (TokenInvalidException $e) {
                 return response()->json(['message' => 'token_invalid'], 401);
             } catch (JWTException $e) {

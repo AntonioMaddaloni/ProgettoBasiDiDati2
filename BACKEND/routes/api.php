@@ -6,6 +6,7 @@ use App\Http\Controllers\TestController;
 use App\Http\Controllers\Auth\TokenController;
 use App\Http\Controllers\Auth\RegistrazioneController;
 use App\Http\Controllers\Anime\AnimeController;
+use App\Http\Controllers\User\UserController;
 
 Route::get('/',[TestController::class,'helloWorld']);
 
@@ -18,9 +19,17 @@ Route::prefix('/token')->group(function () {
 Route::post('/registrazione',[RegistrazioneController::class,'registrazione']);
 
 
-Route::prefix('/anime')->middleware(['auth.jwt'])->group(function () {
-    Route::get('/',[AnimeController::class,'getListaAnime']);
-    Route::get('/id/{id}',[AnimeController::class,'getAnime']);
+Route::middleware(['auth.jwt'])->group(function () {
+
+    Route::prefix('/anime')->group(function () {
+        Route::get('/',[AnimeController::class,'getListaAnime']);
+        Route::get('/id/{id}',[AnimeController::class,'getAnime']);
+    });
+
+    Route::prefix('/user')->group(function () {
+        Route::get('/me',[UserController::class,'me']);
+        Route::get('/my-favorites',[UserController::class,'myFavorites']);
+    });
 
 });
 

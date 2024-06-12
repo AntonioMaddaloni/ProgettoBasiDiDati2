@@ -2,22 +2,32 @@
 
 namespace App\UtilityClasses;
 
+use App\Models\Profile;
 use Tymon\JWTAuth\Contracts\Providers\Auth;
+use Illuminate\Support\Facades\Auth as Autenticazione;
 
 class MyCustomAuthenticationProvider implements Auth
 {
+
     public function byCredentials(array $credentials = [])
     {
-        return true;
+        //
     }
 
     public function byId($id)
     {
-        // maybe throw an expection?
+        $user = Profile::findByID($id);
+
+        if(!$user)
+            return false;
+
+        Autenticazione::login($user);
+        return true;
+
     }
 
     public function user()
     {
-        // you will have to implement this maybe.
+        return auth()->user();
     }
 }
