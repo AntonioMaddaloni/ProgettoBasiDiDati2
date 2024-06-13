@@ -34,8 +34,9 @@ Route::middleware(['auth.jwt'])->group(function () {
         Route::get('/my-favorites',[UserController::class,'myFavorites']);
     });
 
-    Route::prefix('/recensioni')->group(function () {
+    Route::prefix('/review')->group(function () {
         Route::post('/',[RecensioniController::class,'addRecensione']);
+        Route::put('/',[RecensioniController::class,'editRecensione']);
     });
 
 });

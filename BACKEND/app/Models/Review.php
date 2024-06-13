@@ -43,6 +43,38 @@ class Review extends Model
         return $documentsParsed;
     }
 
+    public static function getByIDAndUser($_id,$profile)
+    {
+        $database = app('mongodb');
+        $collezione = $database->reviews->findOne(['_id' => $_id, 'profile' => $profile]);
+        
+        if(!$collezione)
+            return null;
+
+        return $collezione;
+    }
+
+    public static function updateAll($id,$anime,$scores,$testoRecensione)
+    {
+        $database = app('mongodb');
+
+        $values = array_values($scores);
+        $sum = array_sum($values);
+        $count = count($values);
+        $average = $sum / $count;
+
+        $database->reviews->updateOne(
+            ['_id' => $id],
+            ['$set' => ['score' => $average, 'scores' => $scores, 'text' => $testoRecensione]]
+        );
+
+        $animedocument = Anime::findByID($anime);
+        $newscore = $animedocument->updateScore();
+        return $newscore;
+
+    }
+
+
 
 
     public static function create($testoRecensione, $scores, $profile, $anime)

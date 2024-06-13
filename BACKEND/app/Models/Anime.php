@@ -120,6 +120,7 @@ class Anime extends Model
         $anime->popularity = $documento['popularity'];
         $anime->score = $documento['score'];
         $anime->img_url = $documento['img_url'];
+        $anime->document = $database->animes;
         return $anime;
     }
 
@@ -131,6 +132,39 @@ class Anime extends Model
             return null;
 
         return $documento;
+    }
+
+    public function updateScore()
+    {
+        $database = app('mongodb');
+
+        $result = $database->reviews->aggregate([
+            [
+                '$match' => [
+                    'anime' => $this->_id
+                ]
+            ],
+            [
+                '$group' => [
+                    '_id' => null,
+                    'averageScore' => ['$avg' => '$score']
+                ]
+            ]
+        ])->toArray();
+
+        $averageScore = round($result[0]['averageScore'] ?? 0,2);
+
+        $result = $this->document->updateOne(
+            ['_id' => $this->_id],
+            ['$set' => ['score' => $averageScore]]
+        );
+
+        if ($result->getModifiedCount() > 0) {
+            return $averageScore;
+        } else {
+            return null;
+        }
+
     }
 
     
