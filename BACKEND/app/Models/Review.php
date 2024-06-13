@@ -74,7 +74,16 @@ class Review extends Model
 
     }
 
+    public static function deleteAll($id,$anime)
+    {
+        $database = app('mongodb');
 
+        $result = $database->reviews->deleteOne(['_id' => $id]);
+
+        $animedocument = Anime::findByID($anime);
+        $newscore = $animedocument->updateScore();
+        return $newscore;
+    }
 
 
     public static function create($testoRecensione, $scores, $profile, $anime)

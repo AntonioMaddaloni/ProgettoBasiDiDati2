@@ -37,6 +37,7 @@ Route::middleware(['auth.jwt'])->group(function () {
     Route::prefix('/review')->group(function () {
         Route::post('/',[RecensioniController::class,'addRecensione']);
         Route::put('/',[RecensioniController::class,'editRecensione']);
+        Route::delete('/',[RecensioniController::class,'deleteRecensione']);
     });
 
 });

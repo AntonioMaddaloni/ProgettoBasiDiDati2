@@ -59,7 +59,25 @@ class RecensioniController extends Controller
        if($newscore)
             return response()->json(['score' => $newscore],200);
        else
-        return response()->json(['message' => 'review failed'],500);
+            return response()->json(['message' => 'review failed'],500);
+
+    }
+
+    public function deleteRecensione(Request $request)
+    {
+        $id = $request->input('_id');
+        $user = Auth::user();
+        $review = Review::getByIDAndUser(intval($id),$user->getKey());
+        
+        if(!$review)
+            return response()->json(['message' => 'review not found'],400);
+
+       $newscore = Review::deleteAll($id,$review['anime']);
+
+       if($newscore)
+            return response()->json(['score' => $newscore],200);
+       else
+            return response()->json(['message' => 'review failed'],500);
 
     }
 }
