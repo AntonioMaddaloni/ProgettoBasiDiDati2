@@ -20,6 +20,9 @@ class RegistrazioneController extends Controller
         if(!isset($username) && !isset($password) && !isset($gender) && !isset($birthday))
             return response()->json(['message' => 'Missing data'], 401);
 
+        if($username == "" ||  $password == "")
+            return response()->json(['message' => 'Missing data'], 401);
+
         $profilo = Profile::findByID($username);
         if($profilo){
             return response()->json(['message' => 'Already registered user'], 401);
