@@ -1,14 +1,14 @@
 //
-//  FRONTENDApp.swift
-//  FRONTEND
+//  animeHubApp.swift
+//  animeHub
 //
-//  Created by Antonio De Lucia on 03/06/24.
+//  Created by Antonio De Lucia on 13/06/24.
 //
 
 import SwiftUI
 
 @main
-struct FRONTENDApp: App {
+struct animeHubApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

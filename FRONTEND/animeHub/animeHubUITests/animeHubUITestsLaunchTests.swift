@@ -1,13 +1,13 @@
 //
-//  FRONTENDUITestsLaunchTests.swift
-//  FRONTENDUITests
+//  animeHubUITestsLaunchTests.swift
+//  animeHubUITests
 //
-//  Created by Antonio De Lucia on 03/06/24.
+//  Created by Antonio De Lucia on 13/06/24.
 //
 
 import XCTest
 
-final class FRONTENDUITestsLaunchTests: XCTestCase {
+final class animeHubUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

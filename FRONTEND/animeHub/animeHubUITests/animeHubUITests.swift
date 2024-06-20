@@ -1,13 +1,13 @@
 //
-//  FRONTENDUITests.swift
-//  FRONTENDUITests
+//  animeHubUITests.swift
+//  animeHubUITests
 //
-//  Created by Antonio De Lucia on 03/06/24.
+//  Created by Antonio De Lucia on 13/06/24.
 //
 
 import XCTest
 
-final class FRONTENDUITests: XCTestCase {
+final class animeHubUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
